@@ -4,6 +4,7 @@ Liana Lyumi Morisita Fujisima RM565698
 Victor Willian Hwan Cho RM565382
 
 Link vídeo no Youtube:
-
+https://www.youtube.com/watch?v=O23kskjcVgI
 
 Link repositório Github:
+https://github.com/lianafujisima/python-sprint03
