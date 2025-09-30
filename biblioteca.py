@@ -795,7 +795,6 @@ Returns:
     list[dict]: Lista atualizada de perguntas e respostas.
 """
 def menu_faq_adm(faq_lista: list[dict]) -> list[dict]:
-    faq_lista = menu_faq_adm(faq_lista)
     while True:
         limpa_tela()
         print("=== Gerenciar Menu FAQ ===")

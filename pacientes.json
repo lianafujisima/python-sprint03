@@ -1,6 +1,1 @@
-{"pacientes": [{"nome": "Maria Silva", "cpf": "12345678901", "telefone": "+55 (11) 99222-2222"}, 
-{"nome": "Lucas Braga", "cpf": "98765432100", "telefone": "+55 (11) 22222-2224"}, 
-{"nome": "Liana Lyumi Morisita Fujisima", "cpf": "11111111111", "telefone": "+55 (11) 22222-2222"}, 
-{"nome": "Joao Carvalho", "cpf": "88888888888", "telefone": "+55 (11) 9876-5432"}, 
-{"nome": "Pedro Castro", "cpf": "55555555555", "telefone": "+55 (11) 56789-0543"}, 
-{"nome": "Carla Souza", "cpf": "76543218765", "telefone": "+55 (11) 09876-5432"}]}
+{"pacientes": [{"nome": "Maria Silva", "cpf": "12345678901", "telefone": "+55 (11) 99222-2222"}, {"nome": "Lucas Braga", "cpf": "98765432100", "telefone": "+55 (11) 22222-2224"}, {"nome": "Liana Lyumi Morisita Fujisima", "cpf": "11111111111", "telefone": "+55 (11) 22222-2222"}, {"nome": "Joao Carvalho", "cpf": "88888888888", "telefone": "+55 (11) 9876-5432"}, {"nome": "Pedro Castro", "cpf": "55555555555", "telefone": "+55 (11) 56789-0543"}, {"nome": "Carla Souza", "cpf": "76543218765", "telefone": "+55 (11) 09876-5432"}, {"nome": "liana", "cpf": "22222222222", "telefone": "+55 (11) 98765-4321"}]}
