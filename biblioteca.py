@@ -54,16 +54,18 @@ Returns:
 """
 def buscar_usuario_por_cpf_interativo(pacientes: list[dict]) -> dict | None:
     while True:
-        cpf = input("Digite o CPF do usuário (11 dígitos): ").strip()
+        cpf = input("Digite o CPF do Paciente (11 dígitos): ").strip()
         if cpf.isdigit() and len(cpf) == 11:
             usuario = buscar_usuario_por_cpf(cpf, pacientes)
             if usuario:
-                print(f"\nUsuário encontrado: {usuario['nome']}")
+                print(f"\nPaciente encontrado: {usuario['nome']}")
                 return usuario  
         print("\nCPF inválido ou não cadastrado. Digite exatamente 11 números.")
         escolha = entrada_valida(
             "\nO que deseja fazer?\n1 - Tentar novamente\n2 - Voltar\nEscolha: ", ["1", "2"])
-        if escolha == "2":
+        if escolha == "1":
+            continue
+        elif escolha == "2":
             return None
 
 """
@@ -102,7 +104,6 @@ def carrega_dados(arquivo: str, chave: str) -> list:
         print(f"Arquivo '{arquivo}' corrompido ou inválido.")
         return []
     else:
-        print(f"Arquivo '{arquivo}' lido com sucesso.")
         return dados.get(chave, [])
     finally:
         print(f"Tentativa de leitura do '{arquivo}' finalizada.")
@@ -120,14 +121,14 @@ Returns:
 def cadastra_paciente(pacientes: list[dict]) -> list[dict]:
     while True:
         print("=== Cadastro de Paciente ===")
-
+        #validação de dados para nome
         while True:
             nome = input("Digite o nome do paciente: ").strip()
             if not nome or len(nome) < 2 or not nome.replace(" ", "").isalpha():
                 print("Nome inválido. Digite pelo menos 2 letras e apenas letras.")
             else:
                 break
-
+        #validação de dados para CPF
         while True:
             cpf = input("Digite o CPF do paciente (11 dígitos): ").strip()
             if not cpf.isdigit() or len(cpf) != 11:
@@ -137,7 +138,7 @@ def cadastra_paciente(pacientes: list[dict]) -> list[dict]:
                 print("Já existe um paciente com esse CPF. Tente outro.")
                 continue
             break
-
+        #validação de dados DDD
         print("Digite o dados para contato via Whatsapp: ")
         while True:
             ddd = input("Digite o DDD (2 dígitos): ").strip()
@@ -145,7 +146,7 @@ def cadastra_paciente(pacientes: list[dict]) -> list[dict]:
                 print("DDD inválido. Deve ter 2 dígitos entre 11 e 99.")
             else:
                 break
-
+        #validação de dados para número de telefone
         while True:
             numero = input("Digite o número de contato (8 ou 9 dígitos): ").strip()
             if not numero.isdigit() or len(numero) not in [8, 9]:
@@ -202,12 +203,14 @@ def carrega_horarios(arquivo: str) -> dict:
         print(f"Arquivo '{arquivo}' corrompido ou inválido.")
         return {}
     else:
-        print(f"Arquivo '{arquivo}' lido com sucesso.")
         return dados
     finally:
         print(f"Tentativa de leitura do '{arquivo}' finalizada.")  
 
-# Lista de horários válidos (intervalos de 30 min, 08:00 até 18:30)
+
+
+
+# horários válidos (intervalos de 30 min, 08:00 até 18:30)
 horarios_validos = [f"{h:02d}:00" for h in range(8, 19)] + [f"{h:02d}:30" for h in range(8, 19)]
 """
 Verifica se a hora fornecida está dentro da lista de horários válidos.
@@ -227,12 +230,15 @@ Solicita ao usuário um horário válido (08:00 até 18:30, de 30 em 30 minutos)
 Returns:
     str | None: Horário escolhido no formato "hh:mm" ou None se cancelar.
 """
-def pedir_horario() -> str:
+def pedir_horario() -> str | None:
     while True:
-        hora = input("Digite o horário entre 08:00 até 18:30 (hh:mm) apenas de 30 em 30 minutos: ").strip()
+        hora = input("Digite o horário desejado: ").strip()
+        if hora == "0":
+            return None
         if horario_valido(hora):
             return hora
-        print("Horário inválido! Digite entre 08:00 até 18:30 no formato hh:mm, apenas de 30 em 30 minutos.")
+        print("Horário inválido. Use formato hh:mm entre 08:00 e 18:30, apenas de 30 em 30 minutos.")
+
 
 """
 Verifica se a data fornecida é válida (anos 2025 ou 2026).
@@ -254,97 +260,10 @@ def data_valida(data: str) -> bool:
         return False
     if mes < 1 or mes > 12:
         return False
+    #lista que representa a quantidade de dias em cada mês do ano
     dias_por_mes = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
     return 1 <= dia <= dias_por_mes[mes - 1]
 
-"""
-Solicita ao usuário uma data válida no formato dd/mm/aaaa.
-
-Returns:
-    str | None: Data válida ou None se cancelar.
-"""
-def pedir_data() -> str:
-    while True:
-        data = input("Digite a data (dd/mm/aaaa): ").strip()
-        if data_valida(data):
-            return data
-        print("Data inválida! Digite no formato dd/mm/aaaa, anos 2025 ou 2026.")
-
-"""
-Exibe os dias disponíveis com horários cadastrados e permite que o usuário escolha um.
-
-Args:
-    horarios_disponiveis (dict): Dicionário de dias e horários cadastrados.
-
-Returns:
-    str | None: Dia escolhido no formato "dd/mm/aaaa" ou None se não houver/usuário cancelar.
-"""
-def escolher_dia_existente(horarios_disponiveis: dict) -> str | None:
-    if not horarios_disponiveis:
-        print("Nenhum dia cadastrado ainda.")
-        return None
-
-    dias = list(horarios_disponiveis.keys())
-
-    while True:
-        print("Dias existentes:")
-        for i, d in enumerate(dias, 1):
-            print(f"{i}. {d}")
-
-        escolha = input("Escolha o número do dia: ").strip()
-
-        if escolha.isdigit() and 1 <= int(escolha) <= len(dias):
-            return dias[int(escolha)-1]
-
-        print(f"Escolha inválida! Digite um número entre 1 e {len(dias)}.")
-
-"""
-Verifica se a hora fornecida está dentro da lista de horários válidos.
-
-Args:
-    hora (str): Horário no formato "hh:mm".
-
-Returns:
-    bool: True se válido, False caso contrário.
-"""
-def hora_valida(hora: str) -> bool:
-    return hora in horarios_validos
-
-"""
-Solicita ao usuário um horário válido (08:00 até 18:30, de 30 em 30 minutos).
-
-Returns:
-    str | None: Horário escolhido no formato "hh:mm" ou None se cancelar.
-"""
-def pedir_horario() -> str | None:
-    while True:
-
-        hora = input("Digite o horário desejado: ").strip()
-        if hora == "0":
-            return None
-        if hora_valida(hora):
-            return hora
-        print("Horário inválido. Use formato hh:mm entre 08:00 e 18:30, múltiplos de 30 min.")
-
-"""
-Verifica se a data fornecida é válida (anos 2025 ou 2026).
-
-Args:
-    data (str): Data no formato "dd/mm/aaaa".
-
-Returns:
-    bool: True se a data for válida, False caso contrário.
-"""
-def data_valida(data: str) -> bool:
-    if len(data) != 10 or data[2] != "/" or data[5] != "/":
-        return False
-    if not (data[:2].isdigit() and data[3:5].isdigit() and data[6:].isdigit()):
-        return False
-    dia, mes, ano = int(data[:2]), int(data[3:5]), int(data[6:])
-    if ano not in (2025, 2026) or not (1 <= mes <= 12):
-        return False
-    dias_por_mes = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
-    return 1 <= dia <= dias_por_mes[mes - 1]
 
 """
 Solicita ao usuário uma data válida no formato dd/mm/aaaa.
@@ -362,6 +281,7 @@ def pedir_data() -> str | None:
         if data_valida(data):
             return data
         print("Data inválida. Use formato dd/mm/aaaa e anos 2025 ou 2026.")
+
 
 """
 Exibe os dias disponíveis com horários cadastrados e permite que o usuário escolha um.
@@ -389,6 +309,7 @@ def escolher_dia_existente(horarios_disponiveis: dict) -> str | None:
         if escolha.isdigit() and 1 <= int(escolha) <= len(dias):
             return dias[int(escolha)-1]
         print("Escolha inválida. Digite um número entre 0 e", len(dias))
+
 
 """
 Gerencia os horários disponíveis: adiciona e remove dias e horários no 'horarios.json' que serão escolhidos pelo paciente para agendar consulta.
@@ -741,7 +662,6 @@ def carrega_faq(arquivo: str = "faq.json") -> list[dict]:
         print(f"Arquivo '{arquivo}' corrompido ou inválido.")
         return []
     else:
-        print(f"FAQ carregado de '{arquivo}'.")
         return dados.get("faq", [])
     finally:
         print(f"Tentativa de leitura de '{arquivo}' finalizada.")
@@ -834,7 +754,7 @@ def remover_pergunta(faq_lista: list[dict]) -> list[dict]:
 Exibe o menu de perguntas frequentes para o paciente.
 O paciente pode visualizar perguntas e respostas já cadastradas.
 """
-def menu_faq_usuario()->None:
+def menu_faq_paciente()->None:
     faq_lista = carrega_faq()
     if not faq_lista:
         print("Nenhuma pergunta cadastrada.")
@@ -980,7 +900,7 @@ def menu_paciente(pacientes: list[dict], agendamentos: list[dict], horarios_disp
             input("\nPressione Enter para continuar...")
         elif escolha == "5":
             limpa_tela()
-            menu_faq_usuario()
+            menu_faq_paciente()
             input("\nPressione Enter para continuar...")
     return pacientes, agendamentos, horarios_disponiveis
 

@@ -9,7 +9,7 @@ print("Bem-vindo ao sistema de ajuda IMREA HC pelo Whatsapp!")
 pacientes = _b.carrega_dados("pacientes.json", "pacientes")
 agendamentos = _b.carrega_dados("agendamentos.json", "agendamentos")
 horarios_disponiveis = _b.carrega_horarios("horarios.json")
-faq_lista = _b.carregar_faq()
+faq_lista = _b.carrega_faq()
 
 while True:
     print("\n=== IMREA HC - Whatsapp ===")
